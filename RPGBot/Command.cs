@@ -23,5 +23,22 @@
             Commands = new List<string>();
         }
 
+        public string DisplayString()
+        {
+            string cmds = "[ ";
+            for(int i = 0; i < Commands.Count-1; ++i)
+            {
+                cmds += Commands[i]+", ";
+            }
+            cmds += (Commands[Commands.Count - 1] + "]");
+
+            return $"```Command Aliases: {cmds}\nDescription:{Description}\n```";
+        }
+        public string DisplayShortString()
+        {
+
+            return $"{Commands[0]}";
+        }
+
     }
 }

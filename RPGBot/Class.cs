@@ -21,13 +21,28 @@ namespace RPGBot
         [JsonProperty("stats")]
         public Stats Stats { get; set; }
 
-        [JsonProperty("skills")]
-        public List<ClassSkill> Skills { get; set; }
+        [JsonProperty("base_skill")]
+        public long BaseSkill { get; set; }
 
+        [JsonProperty("skills")]
+        public List<long> Skills { get; set; }
+        [JsonProperty("base_hp")]
+        public long BaseHP { get; set; }
         [JsonProperty("base_dmg")]
         public long BaseDamage { get; set; }
 
         [JsonProperty("base_def")]
-        public long BaseDeffense { get; set; }
+        public long BaseDefense { get; set; }
+        public Class()
+        {
+            Skills = new List<long>();
+        }
+
+        public string ShortDisplayString()
+        {
+            string result = $"Name: {Name}\nDescription: {Description}\nBase HP: {BaseHP}\nBase Damage: {BaseDamage}\nBaseDefense: {BaseDefense}\n";
+
+            return result;
+        }
     }
 }

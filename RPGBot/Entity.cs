@@ -10,7 +10,7 @@ namespace RPGBot
     public class Entity
     {
         [JsonProperty("id")]
-        public string ID { get; set; }
+        public long ID { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
@@ -19,12 +19,18 @@ namespace RPGBot
         public long Class { get; set; }
 
         [JsonProperty("level")]
-        public string Level { get; set; }
+        public long Level { get; set; }
+        [JsonProperty("gold")]
+        public long Gold { get; set; }
 
         [JsonProperty("stats")]
         public Stats Stats { get; set; }
 
+        [JsonProperty("base_skill")]
+        public Skill BaseSkill { get; set; }
+
         [JsonProperty("skills")]
         public List<Skill> Skills { get; set; }
+
     }
 }

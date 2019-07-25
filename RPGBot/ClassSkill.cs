@@ -23,6 +23,12 @@ namespace RPGBot
         [JsonProperty("base_cooldown")]
         public long BaseCooldown { get; set; }
 
+        [JsonProperty("cast_duration")]
+        public long CastDuration { get; set; }
+
+        [JsonProperty("method")]
+        public string Method { get; set; }
+
 
     }
 }

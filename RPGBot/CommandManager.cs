@@ -12,10 +12,20 @@ namespace RPGBot
 {
     public class CommandManager
     {
+        private static CommandManager instance;
+        public static CommandManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new CommandManager();
+                return instance;
+            }
+        }
         List<Command> commands;
         Commands commandsMethods;
 
-        public CommandManager()
+        private CommandManager()
         {
             commands = new List<Command>();
             commandsMethods = new Commands();
@@ -83,6 +93,28 @@ namespace RPGBot
             }
         }
 
+        public string GetHelp(string command)
+        {
+            if (command != null)
+            {
+                Command c = FindCommand(command);
+                if (c != null)
+                {
+                    return c.DisplayString();
+                }
+                else
+                    return $"Command {command} not found.";
+            }
+            else
+            {
+                string result = "Possible commands\n";
+                for(int i=0;i<commands.Count-1;++i)
+                    result += commands[i].DisplayShortString()+" ";
+                result += commands[commands.Count - 1].DisplayShortString();
+
+                return Utils.GetCodeText(result);
+            }
+        }
 
 
     }

@@ -127,17 +127,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class.cs" />
+    <Compile Include="ClassManager.cs" />
     <Compile Include="ClassSkill.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandManager.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="FilesInitializer.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="PlayerManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Skill.cs" />
+    <Compile Include="SkillManager.cs" />
+    <Compile Include="Skills.cs" />
     <Compile Include="Stats.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -13,7 +13,7 @@ namespace RPGBot
         public long ID { get; set; }
 
         [JsonProperty("level")]
-        public string Level { get; set; }
+        public long Level { get; set; }
 
         [JsonProperty("expiration")]
         public long Expiration { get; set; }
