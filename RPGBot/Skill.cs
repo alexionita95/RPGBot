@@ -16,7 +16,7 @@ namespace RPGBot
         public long Level { get; set; }
 
         [JsonProperty("expiration")]
-        public long Expiration { get; set; }
+        public double Expiration { get; set; }
     }
 
 }

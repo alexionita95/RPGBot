@@ -32,5 +32,37 @@ namespace RPGBot
         [JsonProperty("skills")]
         public List<Skill> Skills { get; set; }
 
+        [JsonProperty("state")]
+        public long State { get; set; }
+
+        [JsonProperty("revive_time")]
+        public double ReviveTime { get; set; }
+
+        public void Die()
+        {
+            State = 0;
+            ReviveTime = Utils.GetReviveTime(300);
+        }
+        public void Revive()
+        {
+            State = 1;
+            ReviveTime = 0;
+        }
+        public bool isAlive()
+        {
+            return State == 1;
+
+        }
+        public void Tick()
+        {
+            if(!isAlive())
+            {
+                if(ReviveTime < DateTime.Now.TimeOfDay.TotalMilliseconds)
+                {
+                    Revive();
+                }
+            }
+        }
+
     }
 }

@@ -32,5 +32,10 @@ namespace RPGBot
         {
             return $"```{text}```";
         }
+
+        public static double GetReviveTime(double value)
+        {
+            return DateTime.Now.TimeOfDay.TotalMilliseconds + value;
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace RPGBot
     {
         private static SkillManager instance;
         public List<ClassSkill> skills;
-        private List<Tuple<long,Action,long>> casting;
+        private List<Tuple<long,Action,double>> casting;
         Skills skillsMethds;
         public static SkillManager Instance
         {
@@ -29,7 +29,7 @@ namespace RPGBot
         private SkillManager()
         {
             skillsMethds = new Skills();
-            casting = new List<Tuple<long, Action, long>>();
+            casting = new List<Tuple<long, Action, double>>();
         }
         public void Init()
         {
@@ -57,11 +57,12 @@ namespace RPGBot
                 MethodInfo method = typeof(Skills).GetMethod(skill.Method);
                 if (method != null)
                 {
-                    Tuple<long, Action, long> cast = new Tuple<long, Action, long>(caster.ID, () => 
+                    Tuple<long, Action, double> cast = new Tuple<long, Action, double>(caster.ID, () => 
                     {
                         method.Invoke(skillsMethds, new object[] { caster, targets });
-                    }, (long)DateTime.Now.TimeOfDay.TotalMilliseconds + skill.CastDuration * 1000);
-                    
+                    }, DateTime.Now.TimeOfDay.TotalMilliseconds + skill.CastDuration * 1000);
+
+                    casting.Add(cast);
                 }
             }
         }
@@ -79,7 +80,7 @@ namespace RPGBot
 
         public void Tick()
         {
-            foreach(Tuple<long,Action,long> cast in casting)
+            foreach(Tuple<long,Action,double> cast in casting)
             {
                 if(cast.Item3 > DateTime.Now.TimeOfDay.TotalMilliseconds)
                 {

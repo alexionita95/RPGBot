@@ -49,6 +49,14 @@ namespace RPGBot
             return result;
         }
 
+        public void Tick()
+        {
+            foreach(Player p in players)
+            {
+
+            }
+        }
+
         private void LoadPlayers()
         {
             if (File.Exists("players.json"))
