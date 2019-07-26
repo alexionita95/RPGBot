@@ -10,7 +10,8 @@ namespace RPGBot
     {
         public void SkillCapac(Entity caster, Entity[] targets)
         {
-            Console.WriteLine("Casted Capac");
+            Console.WriteLine($"{caster.Name} Casted Capac");
+            DiscordManager.Instance.Channel.SendMessageAsync($"{caster.Name} Casted Capac");
         }
     }
 }

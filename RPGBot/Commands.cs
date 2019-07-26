@@ -40,6 +40,34 @@ namespace RPGBot
             }
         }
 
+        public void AttackCommand(DiscordSocketClient client, SocketMessage message)
+        {
+
+            if (message != null)
+            {
+                string[] args = Utils.GetCommandArgs(message.Content);
+                string response = "";
+                if (args == null)
+                {
+                    ulong id = message.Author.Id;
+                    if(PlayerManager.Instance.PlayerExists((long)id))
+                    {
+                        Player p = PlayerManager.Instance.GetPlayerByID((long)id);
+                        message.Channel.SendMessageAsync(p.CastBaseSkill(null));
+                    }
+                    else
+                    {
+                        message.Channel.SendMessageAsync($"{message.Author.Username} you do not have a character. Use ***create*** command to create one.");
+                    }
+                }
+                else
+                {
+                    response = CommandManager.Instance.GetHelp(args[0]);
+                }
+                message.Channel.SendMessageAsync(response);
+            }
+        }
+
         public void CreateCommand(DiscordSocketClient client, SocketMessage message)
         {
 

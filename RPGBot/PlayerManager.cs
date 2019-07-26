@@ -27,7 +27,7 @@ namespace RPGBot
         {
             LoadPlayers();
         }
-        bool PlayerExists(long id)
+        public bool PlayerExists(long id)
         {
             foreach(Player p in players)
             {
@@ -39,7 +39,7 @@ namespace RPGBot
             return false;
         }
 
-        Player GetPlayerByID(long id)
+        public Player GetPlayerByID(long id)
         {
             foreach (Player p in players)
             {

@@ -14,6 +14,7 @@ namespace RPGBot
         private static SkillManager instance;
         public List<ClassSkill> skills;
         private List<Tuple<long,Action,double>> casting;
+        List<Tuple<long, Action, double>> toRemove;
         Skills skillsMethds;
         public static SkillManager Instance
         {
@@ -30,6 +31,7 @@ namespace RPGBot
         {
             skillsMethds = new Skills();
             casting = new List<Tuple<long, Action, double>>();
+            toRemove = new List<Tuple<long, Action, double>>();
         }
         public void Init()
         {
@@ -45,7 +47,13 @@ namespace RPGBot
                 MethodInfo method = typeof(Skills).GetMethod(skill.Method);
                 if (method != null)
                 {
-                    method.Invoke(skillsMethds, new object[] { caster, targets });
+                    Tuple<long, Action, double> cast = new Tuple<long, Action, double>(caster.ID, () =>
+                    {
+                       caster.BaseSkill.Expiration = DateTime.Now.TimeOfDay.TotalMilliseconds + skill.BaseCooldown*1000; 
+                       method.Invoke(skillsMethds, new object[] { caster, targets });
+                    }, DateTime.Now.TimeOfDay.TotalMilliseconds + skill.CastDuration * 1000);
+
+                    casting.Add(cast);
                 }
             }
         }
@@ -59,6 +67,7 @@ namespace RPGBot
                 {
                     Tuple<long, Action, double> cast = new Tuple<long, Action, double>(caster.ID, () => 
                     {
+                        
                         method.Invoke(skillsMethds, new object[] { caster, targets });
                     }, DateTime.Now.TimeOfDay.TotalMilliseconds + skill.CastDuration * 1000);
 
@@ -80,14 +89,19 @@ namespace RPGBot
 
         public void Tick()
         {
+    
             foreach(Tuple<long,Action,double> cast in casting)
             {
                 if(cast.Item3 > DateTime.Now.TimeOfDay.TotalMilliseconds)
                 {
                     cast.Item2();
-                    casting.Remove(cast);
                 }
             }
+            foreach(Tuple<long, Action, double> r in toRemove)
+            {
+                casting.Remove(r);  
+            }
+            toRemove.Clear();
         }
 
         private void LoadSkills ()

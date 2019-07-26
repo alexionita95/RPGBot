@@ -37,16 +37,33 @@ namespace RPGBot
 
         [JsonProperty("revive_time")]
         public double ReviveTime { get; set; }
-
-        public void Die()
+        public string CastBaseSkill(Entity[] targets)
+        {
+            string result = "";
+            if(BaseSkill.CanBeCasted())
+            {
+                SkillManager.Instance.CastBaseSkill(this, targets);
+            }
+            else
+            {
+                double now = DateTime.Now.TimeOfDay.TotalMilliseconds;
+                double exp = BaseSkill.Expiration;
+                double seconds = exp - now;
+                return $"{Name}'s base skill is cooling down: {Utils.FormatSeconds(seconds/1000)}";
+            }
+            return result;
+        }
+        public string Die()
         {
             State = 0;
             ReviveTime = Utils.GetReviveTime(300);
+            return $"{Name} died";
         }
-        public void Revive()
+        public string Revive()
         {
             State = 1;
             ReviveTime = 0;
+            return $"{Name} has been revived";
         }
         public bool isAlive()
         {
@@ -59,8 +76,13 @@ namespace RPGBot
             {
                 if(ReviveTime < DateTime.Now.TimeOfDay.TotalMilliseconds)
                 {
-                    Revive();
+                    DiscordManager.Instance.Channel.SendMessageAsync(Utils.GetCodeText(Revive()));
+                    
                 }
+            }
+            else
+            {
+
             }
         }
 

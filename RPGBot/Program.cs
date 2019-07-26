@@ -28,16 +28,23 @@ namespace RPGBot
             ClassManager.Instance.Init();
             SkillManager.Instance.Init();
             worker = new Thread(backgroundTask);
+            DiscordManager.Instance.Ready = new Action(DiscordReady);
             DiscordManager.Instance.Init();
             await Task.Delay(-1);
         }
 
+        private void DiscordReady()
+        {
+            worker.Start();
+        }
         
         bool running = true;
         private void backgroundTask()
         {
             while (running)
             {
+                PlayerManager.Instance.Tick();
+                SkillManager.Instance.Tick();
                 Thread.Sleep(1000);
             }
         }

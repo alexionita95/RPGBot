@@ -14,10 +14,15 @@ namespace RPGBot
         private SocketGuild server;
         private SocketTextChannel channel;
         private DiscordSocketClient _client;
-
+        private Action ready;
         public DiscordSocketClient Client
         {
             get { return _client; }
+        }
+        public Action Ready
+        {
+            get { return ready; }
+            set { ready = value; }
         }
 
         public SocketGuild Server
@@ -85,6 +90,10 @@ namespace RPGBot
                 channel = GetChannel();
             }
             channel.SendMessageAsync("RPG Bot ready");
+            if(ready!=null)
+            {
+                ready();
+            }
             return Task.CompletedTask;
         }
 

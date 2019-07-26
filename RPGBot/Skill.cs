@@ -17,6 +17,11 @@ namespace RPGBot
 
         [JsonProperty("expiration")]
         public double Expiration { get; set; }
+
+        public bool CanBeCasted()
+        {
+            return Expiration == 0;
+        }
     }
 
 }
