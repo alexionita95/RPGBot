@@ -89,6 +89,7 @@ namespace RPGBot
             {
                 p.Tick();
             }
+            SavePlayers();
         }
 
         private void LoadPlayers()

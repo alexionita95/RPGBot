@@ -19,6 +19,10 @@ namespace RPGBot
             string ss = (s > 0) ? $"{s}s " : "";
             return hs + ms + ss;
         }
+        public static double GetTimeDifference(double value)
+        {
+            return value - DateTime.Now.TimeOfDay.TotalMilliseconds;
+        }
 
         public static string[] GetCommandArgs(string command)
         {

@@ -82,7 +82,17 @@ namespace RPGBot
             }
             else
             {
-
+                foreach(Skill s in Skills)
+                {
+                    if (Utils.GetTimeDifference(s.Expiration)<0)
+                    {
+                        s.Expiration = 0;
+                    }
+                }
+                if (Utils.GetTimeDifference(BaseSkill.Expiration) < 0)
+                {
+                    BaseSkill.Expiration = 0;
+                }
             }
         }
 
