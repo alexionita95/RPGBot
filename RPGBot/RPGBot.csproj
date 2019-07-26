@@ -133,6 +133,7 @@
     <Compile Include="CommandManager.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="DiscordManager.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="FilesInitializer.cs" />
     <Compile Include="Player.cs" />

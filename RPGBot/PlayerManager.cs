@@ -27,6 +27,29 @@ namespace RPGBot
         {
             LoadPlayers();
         }
+        bool PlayerExists(long id)
+        {
+            foreach(Player p in players)
+            {
+                if(p.ID == id)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        Player GetPlayerByID(long id)
+        {
+            foreach (Player p in players)
+            {
+                if (p.ID == id)
+                {
+                    return p;
+                }
+            }
+            return null;
+        }
 
         public string AddPlayer(long id,string name, string cls)
         {
@@ -34,17 +57,28 @@ namespace RPGBot
             Class cl = ClassManager.Instance.GetClassByName(cls);
             if(cl!=null)
             {
-                Skill b = new Skill();
-                b.ID = cl.BaseSkill;
-                Stats st = new Stats() { Dex = cl.Stats.Dex, Int = cl.Stats.Int, Str = cl.Stats.Str, Vit = cl.Stats.Vit };
-                List<Skill> sk = new List<Skill>();
-                foreach(long s in cl.Skills)
+                if (!PlayerExists(id))
                 {
-                    sk.Add(new Skill() { ID = s,Expiration=0,Level=0});
+                    Skill b = new Skill();
+                    b.ID = cl.BaseSkill;
+                    Stats st = new Stats() { Dex = cl.Stats.Dex, Int = cl.Stats.Int, Str = cl.Stats.Str, Vit = cl.Stats.Vit };
+                    List<Skill> sk = new List<Skill>();
+                    foreach (long s in cl.Skills)
+                    {
+                        sk.Add(new Skill() { ID = s, Expiration = 0, Level = 0 });
+                    }
+                    Player p = new Player() { ID = id, Name = name, BaseSkill = b, Gold = 0, Class = cl.ID, Level = 1, Stats = st, Skills = sk };
+                    players.Add(p);
+                    SavePlayers();
                 }
-                Player p = new Player() { ID = id, Name = name, BaseSkill = b, Gold = 0, Class = cl.ID, Level = 1, Stats=st,Skills=sk};
-                players.Add(p);
-                SavePlayers();
+                else
+                {
+                    result = $"{name} you already have a character. Use ***me*** command to see more.";
+                }
+            }
+            else
+            {
+                result = $"Class {cls} does not exist. Use ***classes*** command to see available classes.";
             }
             return result;
         }
@@ -53,7 +87,7 @@ namespace RPGBot
         {
             foreach(Player p in players)
             {
-
+                p.Tick();
             }
         }
 
