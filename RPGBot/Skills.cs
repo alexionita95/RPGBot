@@ -17,10 +17,7 @@ namespace RPGBot
                 foreach (Entity e in targets)
                 {
                     double damage = 2 * caster.CalculateDamage();
-                    damage = e.TakeDamage(damage);
-                    
-                    DiscordManager.Instance.SendCastMessage(caster, e, SkillManager.Instance.GetSkillByID(caster.BaseSkill.ID).Name, damage);
-
+                    e.TakeDamage(caster, SkillManager.Instance.GetSkillByID(caster.BaseSkill.ID).Name, 2);
                 }
             }
             
@@ -29,20 +26,7 @@ namespace RPGBot
         {
             double hp = 200;
             caster.Heal(hp);
-            DiscordManager.Instance.SendMessage($"{caster.Name} casted {skill.Name} and was healed by {hp} HP ");
-
-
-            if (targets != null)
-            {
-                foreach (Entity e in targets)
-                {
-                    double damage = 2 * caster.CalculateDamage();
-                    damage = e.TakeDamage(damage);
-
-                    DiscordManager.Instance.SendCastMessage(caster, e, SkillManager.Instance.GetSkillByID(caster.BaseSkill.ID).Name, damage);
-
-                }
-            }
+            DiscordManager.Instance.SendMessage($"{caster.Name} casted {skill.Name} and was healed by {hp} HP (HP: {caster.HP}) ");
 
         }
 
@@ -54,8 +38,7 @@ namespace RPGBot
                 foreach(Entity e in targets)
                 {
                     double damage = caster.CalculateDamage();
-                    damage = e.TakeDamage(damage);
-                    DiscordManager.Instance.SendCastMessage(caster, e, "Base Damage", damage);
+                    damage = e.TakeDamage(caster,"Base Damage",1);
                 }
             }
             

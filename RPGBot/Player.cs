@@ -72,6 +72,10 @@
         {
             return $"STATS\nName: {Name}\nAvailable Stat Points: {AvailableStatPoints}\nVIT:{Stats.Vit}\nSTR:{Stats.Str}\nINT:{Stats.Int}\nDEX:{Stats.Dex}";
         }
+        public new string AttributesString()
+        {
+            return $"ATTRIBUTES\nName: {Name}\nDamage: {CalculateDamage()}\nDefense:{CalculateDefense()}\nDodge Chance:{Math.Floor(CalculateDodgeChance()*100)}%\nCrit Chance:{Math.Floor(CalculateCritChance() * 100)}%\nCrit Value:{Math.Floor(CalculateCritValue() * 100)}%";
+        }
         public new string SkillsString()
         {
             string skillString = "\nClass Skills\n\n";

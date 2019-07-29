@@ -142,6 +142,11 @@ namespace RPGBot
                                     DiscordManager.Instance.SendMessage(p.SkillsString());
                                 }
                                 break;
+                            case "attributes":
+                                {
+                                    DiscordManager.Instance.SendMessage(p.AttributesString());
+                                }
+                                break;
                         }
                     }
                 }

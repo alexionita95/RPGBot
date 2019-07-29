@@ -146,12 +146,62 @@ namespace RPGBot
             else
                 return ((Mob)this).BaseDefense;
         }
-        public double TakeDamage(double damage)
+
+        public double CalculateCritChance()
         {
+            return 0.001 * Stats.Int + 0.01 * Stats.Dex;
+        }
+        public double CalculateCritValue()
+        {
+            return 0.01*Stats.Str+0.001*Stats.Int+0.005*Stats.Dex;
+        }
+        
+        public double CalculateDodgeChance()
+        {
+            return 0.001*Stats.Int + 0.01*Stats.Dex;
+        }
+
+        public double TakeDamage(Entity from, string skill,double multiplyer)
+        {
+            double damage = multiplyer * from.CalculateDamage();
+            bool critical = false;
+            Random rand = new Random();
+            double critChance = rand.NextDouble();
+            if (critChance >= 1 - from.CalculateCritChance())
+            {
+                double critValue = from.CalculateCritValue();
+                damage = (1 + critValue) * damage;
+                critical = true;
+            }
+            
             double newDamage = damage - CalculateDefense();
             if (newDamage < 0)
                 newDamage = 0;
-            HP -= newDamage;
+            Random rand2 = new Random();
+            double dodgeChance = rand.NextDouble();
+            bool dodge = false;
+            if(dodgeChance > 1-CalculateDodgeChance())
+            {
+                dodge = true;
+            }
+            if(dodge)
+            {
+                
+                DiscordManager.Instance.SendMessage($"{from.Name} casted {skill} on {this.Name} and missed.");
+            }
+            else
+            {
+                HP -= newDamage;
+                if (critical)
+                {
+                    DiscordManager.Instance.SendMessage($"{from.Name} casted CRITICAL {skill} on {this.Name}.(DMG: {newDamage}). Remaning HP: {Math.Floor(HP)}");
+                }
+                else
+                {
+                    DiscordManager.Instance.SendMessage($"{from.Name} casted {skill} on {this.Name}.(DMG: {newDamage}). Remaning HP: {Math.Floor(HP)}");
+                }
+            }
+
             return newDamage;
         }
 
@@ -174,7 +224,11 @@ namespace RPGBot
         {
             return "";
         }
-        public new string SkillsString()
+        public string SkillsString()
+        {
+            return "";
+        }
+        public string AttributesString()
         {
             return "";
         }
