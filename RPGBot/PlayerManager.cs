@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -166,13 +168,33 @@ namespace RPGBot
                 players = new List<Player>();
             }
         }
-        public void SavePlayers()
+        public async void SavePlayers()
         {
             if (players != null)
             {
                 string json = JsonConvert.SerializeObject(players, Formatting.Indented);
                 if (json != null)
                 {
+
+                    var client = new MongoClient("mongodb+srv://alex:Demo_mec027_Y03@nanohome-rszjd.mongodb.net/test?retryWrites=true&w=majority");
+                    var database = client.GetDatabase("rpgbot");
+                    var collection = database.GetCollection<BsonDocument>("players");
+                    using (IAsyncCursor<BsonDocument> cursor = await collection.FindAsync(new BsonDocument()))
+                    {
+                        while (await cursor.MoveNextAsync())
+                        {
+                            IEnumerable<BsonDocument> batch = cursor.Current;
+                            BsonDocument doc = batch.ElementAt(0);
+                            doc.Set("values", json);
+                            var id = doc.GetElement("_id");
+                            var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(id.Value.ToString()));
+                            var update = Builders<BsonDocument>.Update.Set("values", json);
+                            collection.UpdateOne(filter, update);
+
+                        }
+                    }
+
+
                     using (StreamWriter sw = new StreamWriter("players.json", false))
                     {
                         sw.Write(json);
