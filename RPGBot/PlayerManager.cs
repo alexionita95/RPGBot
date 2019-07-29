@@ -113,15 +113,17 @@ namespace RPGBot
 
         public void AddLoot(Loot loot)
         {
+            List<string> message = new List<string>();
             foreach(Player p in players)
             {
+                
                 if(p.ID == MobManager.Instance.LastBossKiller)
                 {
                     double g = 1.5 * loot.Gold;
                     double e = 1.5 * loot.EXP;
                     p.Gold += g;
                     p.EXP += e;
-                    DiscordManager.Instance.SendLootMessage(p.Name, e, g);
+                    message.Add($"{p.Name} received {e} EXP and {g} Gold");
 
                 }
                 else
@@ -130,9 +132,10 @@ namespace RPGBot
                     double e = loot.EXP;
                     p.Gold += g;
                     p.EXP += e;
-                    DiscordManager.Instance.SendLootMessage(p.Name, e, g);
+                    message.Add($"{p.Name} received {e} EXP and {g} Gold");
                 }
             }
+            DiscordManager.Instance.SendCombinedMessage(message.ToArray());
         }
 
 

@@ -21,14 +21,16 @@
             {
                 if (ReviveTime < DateTime.Now.TimeOfDay.TotalMilliseconds && ReviveTime != 0)
                 {
-                    DiscordManager.Instance.Channel.SendMessageAsync(Utils.GetCodeText(Revive()));
+                    DiscordManager.Instance.SendMessage(Revive());
 
                 }
             }
             else
             {
                 if (HP < 0)
-                    DiscordManager.Instance.Channel.SendMessageAsync(Utils.GetCodeText(Die()));
+                {
+                    DiscordManager.Instance.SendImageMessage(Die(),"https://i.imgur.com/RSbBJEO.gif ");
+                }
             }
             if(EXP > NeededEXP)
             {

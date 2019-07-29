@@ -143,7 +143,8 @@ namespace RPGBot
                 }
                 else
                 {
-                    DiscordManager.Instance.SendMessage($"{currentBoss.Name} was killed by {PlayerManager.Instance.GetPlayerByID(lastBossKiller).Name}");
+                    DiscordManager.Instance.SendImageMessage($"{currentBoss.Name} was killed by {PlayerManager.Instance.GetPlayerByID(lastBossKiller).Name}", "https://i.imgur.com/RSbBJEO.gif ");
+                    PlayerManager.Instance.AddLoot(currentBoss.Loot);
                     lastBossKiller = 0;
                 }
 

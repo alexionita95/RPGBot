@@ -110,6 +110,29 @@ namespace RPGBot
             if(message.Length != 0)
             Channel.SendMessageAsync(Utils.GetCodeText(message));
         }
+
+        public void SendCombinedMessage(string[] message)
+        {
+            if (message.Length != 0)
+            {
+                string full = "";
+                foreach(string m in message)
+                {
+                    if (message.Length != 0)
+                    {
+                        full+=m+"\n";
+                    }
+                }
+                Channel.SendMessageAsync(Utils.GetCodeText(full));
+            }
+        }
+        public void SendImageMessage(string message, string image)
+        {
+            string full = Utils.GetCodeText(message);
+            full += "\n" + image;
+            Channel.SendMessageAsync(full);
+        }
+
         public void SendNormalMessage(string message)
         {
             if (message.Length != 0)

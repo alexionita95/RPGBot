@@ -43,7 +43,6 @@ namespace RPGBot
         {
             State = 0;
             MobManager.Instance.GetBossByID(ID).Level++;
-            PlayerManager.Instance.AddLoot(Loot);
             MobManager.Instance.SaveBosses();
         }
 
