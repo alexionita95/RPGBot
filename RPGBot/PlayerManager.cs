@@ -118,7 +118,6 @@ namespace RPGBot
         public void SavePlayers()
         {
             string json = JsonConvert.SerializeObject(players);
-            Console.WriteLine(json);
             using (StreamWriter sw = new StreamWriter("players.json", false))
             {
                 sw.Write(json);

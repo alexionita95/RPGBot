@@ -136,6 +136,8 @@
     <Compile Include="DiscordManager.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="FilesInitializer.cs" />
+    <Compile Include="Mob.cs" />
+    <Compile Include="MobManager.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerManager.cs" />
     <Compile Include="Program.cs" />

@@ -31,5 +31,22 @@ namespace RPGBot
                 ClassManager.Instance.SaveClasses();
             }
         }
+
+        public static void InitializeBosses()
+        {
+            MobManager.Instance.Init();
+            Mob m = new Mob();
+            Skill s = new Skill();
+            s.ID = -1;
+            m.BaseSkill = s;
+            Stats st = new Stats();
+            m.Stats = st;
+            MobManager.Instance.bosses.Add(m);
+            MobManager.Instance.SaveBosses();
+        }
+        public static void InitializeMinions()
+        {
+
+        }
     }
 }

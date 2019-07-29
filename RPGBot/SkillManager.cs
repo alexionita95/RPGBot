@@ -56,6 +56,23 @@ namespace RPGBot
                     casting.Add(cast);
                 }
             }
+            else
+            {
+                if(caster.BaseSkill.ID==-1)
+                {
+                    MethodInfo method = typeof(Skills).GetMethod("SkillBaseDamage");
+                    if (method != null)
+                    {
+                        Tuple<long, Action, double> cast = new Tuple<long, Action, double>(caster.ID, () =>
+                        {
+                            caster.BaseSkill.Expiration = DateTime.Now.TimeOfDay.TotalMilliseconds + 60 * 1000;
+                            method.Invoke(skillsMethds, new object[] { caster, targets });
+                        }, DateTime.Now.TimeOfDay.TotalMilliseconds + 1 * 1000);
+
+                        casting.Add(cast);
+                    }
+                }
+            }
         }
         public void CastSkill(int id,Entity caster, Entity[] targets)
         {

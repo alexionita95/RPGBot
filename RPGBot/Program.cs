@@ -27,6 +27,7 @@ namespace RPGBot
             Config.Instance.Init();
             ClassManager.Instance.Init();
             SkillManager.Instance.Init();
+            MobManager.Instance.Init();
             worker = new Thread(backgroundTask);
             DiscordManager.Instance.Ready = new Action(DiscordReady);
             DiscordManager.Instance.Init();
@@ -45,6 +46,7 @@ namespace RPGBot
             {
                 PlayerManager.Instance.Tick();
                 SkillManager.Instance.Tick();
+                MobManager.Instance.Tick();
                 Thread.Sleep(1000);
             }
         }

@@ -7,13 +7,16 @@ using Newtonsoft.Json;
 
 namespace RPGBot
 {
-    public class Entity
+    public partial class Entity
     {
         [JsonProperty("id")]
         public long ID { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
+
+        [JsonProperty("hp")]
+        public double HP { get; set; }
 
         [JsonProperty("class")]
         public long Class { get; set; }
@@ -72,29 +75,9 @@ namespace RPGBot
         }
         public void Tick()
         {
-            if(!isAlive())
-            {
-                if(ReviveTime < DateTime.Now.TimeOfDay.TotalMilliseconds)
-                {
-                    DiscordManager.Instance.Channel.SendMessageAsync(Utils.GetCodeText(Revive()));
-                    
-                }
-            }
-            else
-            {
-                foreach(Skill s in Skills)
-                {
-                    if (Utils.GetTimeDifference(s.Expiration)<0)
-                    {
-                        s.Expiration = 0;
-                    }
-                }
-                if (Utils.GetTimeDifference(BaseSkill.Expiration) < 0)
-                {
-                    BaseSkill.Expiration = 0;
-                }
-            }
+
         }
+
 
     }
 }
