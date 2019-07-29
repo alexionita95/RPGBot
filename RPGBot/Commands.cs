@@ -70,6 +70,30 @@ namespace RPGBot
             }
         }
 
+        public void CastCommand(DiscordSocketClient client, SocketMessage message)
+        {
+
+            if (message != null)
+            {
+                string[] args = Utils.GetCommandArgs(message.Content);
+                string response = "";
+                if (args == null)
+                {
+                    response = "Use help to see command usage";
+                }
+                else
+                {
+                    ulong id = message.Author.Id;
+                    if (PlayerManager.Instance.PlayerExists((long)id))
+                    {
+                        Player p = PlayerManager.Instance.GetPlayerByID((long)id);
+                        DiscordManager.Instance.SendMessage(p.CastSkill(args[0],null));
+                    }
+                }
+                DiscordManager.Instance.SendMessage(response);
+            }
+        }
+
         public void MeCommand(DiscordSocketClient client, SocketMessage message)
         {
 
@@ -83,7 +107,7 @@ namespace RPGBot
                     if (PlayerManager.Instance.PlayerExists((long)id))
                     {
                         Player p = PlayerManager.Instance.GetPlayerByID((long)id);
-                        DiscordManager.Instance.SendMessage(p.ShortDisplayString()));
+                        DiscordManager.Instance.SendMessage(p.ShortDisplayString());
                     }
                     else
                     {

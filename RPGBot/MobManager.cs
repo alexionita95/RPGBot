@@ -165,6 +165,15 @@ namespace RPGBot
                     {
                         currentBoss = null;
                     }
+                    else
+                    {
+                        if(Utils.GetTimeDifference(currentBoss.LeaveTime)<0)
+                        {
+                            DiscordManager.Instance.SendMessage($"{currentBoss.Name} left");
+                            DiscordManager.Instance.SendNormalMessage("https://i.imgur.com/p06VNJM.png ");
+                            currentBoss = null;
+                        }
+                    }
                 }
             }
             else
@@ -206,7 +215,7 @@ namespace RPGBot
         }
         public void SaveBosses()
         {
-            string json = JsonConvert.SerializeObject(bosses);
+            string json = JsonConvert.SerializeObject(bosses, Formatting.Indented);
             Console.WriteLine(json);
             using (StreamWriter sw = new StreamWriter("bosses.json", false))
             {

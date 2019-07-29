@@ -16,6 +16,7 @@
 
         public new void Tick()
         {
+            Heal(Utils.CalculateHeal(this));
             if (!isAlive())
             {
                 if (ReviveTime < DateTime.Now.TimeOfDay.TotalMilliseconds && ReviveTime != 0)
@@ -34,6 +35,7 @@
                 EXP -= NeededEXP;
                 ++Level;
                 NeededEXP = Utils.CalculateNeededEXP(Level + 1);
+                HP = MaxHP;
                 DiscordManager.Instance.SendLevelUpMessage(this);
             }
             foreach (Skill s in Skills)
@@ -57,7 +59,7 @@
         }
         public new string ShortDisplayString()
         {
-            return $"Name: {Name}\nHP: {HP}/{MaxHP}\nTime until next attack:{Utils.FormatSeconds(Utils.GetTimeDifference(BaseSkill.Expiration) / 1000)}";
+            return $"Name: {Name}\nHP: {HP}/{MaxHP}\nEXP:{EXP}/{NeededEXP}\nLevel:{Level}\nGold:{Gold}\nTime until next attack:{Utils.FormatSeconds(Utils.GetTimeDifference(BaseSkill.Expiration) / 1000)}";
         }
     }
 

@@ -44,7 +44,7 @@ namespace RPGBot
         }
         public void SaveCommands()
         {
-            string json = JsonConvert.SerializeObject(commands);
+            string json = JsonConvert.SerializeObject(commands,Formatting.Indented);
             Console.WriteLine(json);
             using (StreamWriter sw = new StreamWriter("commands.json",false))
             {

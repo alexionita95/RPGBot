@@ -97,7 +97,7 @@ namespace RPGBot
                 return GetSkillByID(id).BaseCooldown * 1000;
         }
 
-        public void CastSkill(int id,Entity caster, Entity[] targets)
+        public void CastSkill(long id,Entity caster, Entity[] targets)
         {
             ClassSkill skill = GetSkillByID(id);
             if (skill != null)
@@ -108,7 +108,7 @@ namespace RPGBot
                     Tuple<long, Action, double> cast = new Tuple<long, Action, double>(caster.ID, () =>
                     {
 
-                        method.Invoke(skillsMethds, new object[] { caster, targets });
+                        method.Invoke(skillsMethds, new object[] { caster, targets,skill});
                         if (caster is Player)
                         {
                             if (MobManager.Instance.GetCurrentBoss().HP < 0)
@@ -175,9 +175,16 @@ namespace RPGBot
                 skills = new List<ClassSkill>();
             }
         }
+        public ClassSkill GetSkillByName(string name)
+        {
+            foreach (ClassSkill s in skills)
+                if (s.Name.ToLower().Equals(name.ToLower()))
+                    return s;
+            return null;
+        }
         public void SaveSkills()
         {
-            string json = JsonConvert.SerializeObject(skills);
+            string json = JsonConvert.SerializeObject(skills,Formatting.Indented);
             Console.WriteLine(json);
             using (StreamWriter sw = new StreamWriter("skills.json", false))
             {

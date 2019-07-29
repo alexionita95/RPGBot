@@ -73,5 +73,21 @@ namespace RPGBot
             }
             return 0;
         }
+
+        public static double CalculateHeal(Entity entity)
+        {
+           /* if (entity is Mob)
+            {
+                return ((Mob)entity).BaseDamage + entity.Level * entity.Stats.Str * 5;
+            }*/
+            if (entity is Player)
+            {
+                return entity.Stats.Vit*2;
+            }
+            return 0;
+        }
+
+
+
     }
 }

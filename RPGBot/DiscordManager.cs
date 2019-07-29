@@ -107,7 +107,13 @@ namespace RPGBot
 
         public void SendMessage(string message)
         {
+            if(message.Length != 0)
             Channel.SendMessageAsync(Utils.GetCodeText(message));
+        }
+        public void SendNormalMessage(string message)
+        {
+            if (message.Length != 0)
+                Channel.SendMessageAsync(message);
         }
 
         private Task _client_Ready()

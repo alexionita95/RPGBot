@@ -135,6 +135,7 @@ namespace RPGBot
             }
         }
 
+
         private void LoadPlayers()
         {
             if (File.Exists("players.json"))
@@ -145,6 +146,10 @@ namespace RPGBot
                     {
                         string json = sr.ReadToEnd();
                         players = JsonConvert.DeserializeObject<List<Player>>(json);
+                        if(players==null)
+                        {
+                            players = new List<Player>();
+                        }
                         sr.Close();
                     }
                     else
@@ -160,12 +165,18 @@ namespace RPGBot
         }
         public void SavePlayers()
         {
-            string json = JsonConvert.SerializeObject(players);
-            using (StreamWriter sw = new StreamWriter("players.json", false))
+            if (players != null)
             {
-                sw.Write(json);
-                sw.Flush();
-                sw.Close();
+                string json = JsonConvert.SerializeObject(players, Formatting.Indented);
+                if (json != null)
+                {
+                    using (StreamWriter sw = new StreamWriter("players.json", false))
+                    {
+                        sw.Write(json);
+                        sw.Flush();
+                        sw.Close();
+                    }
+                }
             }
         }
     }

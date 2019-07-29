@@ -22,6 +22,12 @@ namespace RPGBot
         {
             return Expiration == 0;
         }
+
+        public string ShortDisplayString()
+        {
+            ClassSkill s = SkillManager.Instance.GetSkillByID(ID);
+            return $"Name: {s.Name}\nCast duration:{Utils.FormatSeconds(s.CastDuration)}\nTime until next cast: {Utils.FormatSeconds(Utils.GetTimeDifference(Expiration))}";
+        }
     }
 
 }

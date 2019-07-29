@@ -65,6 +65,57 @@ namespace RPGBot
             }
             return result;
         }
+        public bool CanCast(long skill)
+        {
+            foreach (Skill s in Skills)
+                if (s.ID == skill)
+                    return true;
+            return false;
+        }
+        public Skill GetSkillByID(long id)
+        {
+            foreach (Skill s in Skills)
+                if (s.ID == id)
+                    return s;
+            return null;
+        }
+        public string CastSkill(string name, Entity[] targets)
+        {
+            string result = "";
+            ClassSkill skill = SkillManager.Instance.GetSkillByName(name);
+            if (skill == null)
+                return "Skill not found";
+            else
+            {
+                if (CanCast(skill.ID))
+                {
+                    if (isAlive())
+                    {
+                        Skill s = GetSkillByID(skill.ID);
+                        if (s.CanBeCasted())
+                        {
+                            SkillManager.Instance.CastSkill(s.ID,this, targets);
+                        }
+                        else
+                        {
+                            return $"{Name}'s {skill.Name} skill is cooling down: {Utils.FormatSeconds(Utils.GetTimeDifference(s.Expiration) / 1000)}";
+                        }
+                    }
+                    else
+                    {
+                        return $"{Name} you are dead. You will be revived in: {Utils.FormatSeconds(Utils.GetTimeDifference(ReviveTime) / 1000)}";
+                    }
+                }
+                else
+                {
+                    return $"{Name} you can not cast {skill.Name}";
+                }
+            }
+            return result;
+        }
+
+
+
         public string Die()
         {
             return null;
@@ -103,6 +154,18 @@ namespace RPGBot
             HP -= newDamage;
             return newDamage;
         }
+
+        public void Heal(double amount)
+        {
+            if(isAlive())
+            {
+                if (HP < MaxHP)
+                    HP += amount;
+                if (HP > MaxHP)
+                    HP = MaxHP;
+            }
+        }
+
         public string ShortDisplayString()
         {
             return "";
