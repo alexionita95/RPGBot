@@ -16,6 +16,14 @@ namespace RPGBot
         Mob currentBoss;
         List<Mob> currentMinions;
         double timeUntilNextBoss;
+
+        long lastBossKiller;
+        public long LastBossKiller
+        {
+            get { return lastBossKiller; }
+            set { lastBossKiller = value; }
+        }
+
         private static MobManager instance;
         public static MobManager Instance
         {
@@ -36,6 +44,38 @@ namespace RPGBot
             LoadMinions();
 
         }
+
+        public Mob GetCurrentBoss()
+        {
+            if(currentBoss !=null)
+            {
+                if (currentBoss.isAlive())
+                    return currentBoss;
+            }
+            return null;
+        }
+        public Mob GetBossByID(long id)
+        {
+            foreach(Mob m in bosses)
+            {
+                if (m.ID == id)
+                    return m;
+            }
+            return null;
+        }
+        private string DisplayTimeUntilNextBoss()
+        {
+            return $"No boss available!\nTime until next boss: {Utils.FormatSeconds(Utils.GetTimeDifference(timeUntilNextBoss) / 1000)}";
+        }
+        public string DisplayCurrentBoss()
+        {
+            if(currentBoss== null)
+            {
+                return DisplayTimeUntilNextBoss();
+            }
+            return currentBoss.ShortDisplayString();
+        }
+
         private void PrepareBossSpawn()
         {
             Random rand = new Random();
@@ -45,29 +85,70 @@ namespace RPGBot
             {
                 currentBossIndex = index;
                 timeUntilNextBoss = DateTime.Now.TimeOfDay.TotalMilliseconds + boss.SpawnTime * 1000;
-                DiscordManager.Instance.Channel.SendMessageAsync($"Time until next boss: {Utils.FormatSeconds(Utils.GetTimeDifference(timeUntilNextBoss)/1000)}");
+                DiscordManager.Instance.SendMessage(DisplayTimeUntilNextBoss());
             }
         }
         private void SpawnBoss()
         {
             Mob boss = bosses.ElementAt(currentBossIndex);
-            currentBoss = new Mob() { Name = boss.Name, BaseSkill = boss.BaseSkill, Stats = new Stats() {
-                Dex = boss.Stats.Dex,
-                Int = boss.Stats.Int,
-                Vit = boss.Stats.Vit,
-                Str=boss.Stats.Str
-            },BaseDamage=boss.BaseDamage,BaseDefense=boss.BaseDefense,LeaveTime=boss.LeaveTime, State=1};
-            currentBoss.HP = currentBoss.BaseHP + 10 * currentBoss.Stats.Vit;
-            currentBoss.BaseDamage = currentBoss.BaseDamage + 5 * currentBoss.Stats.Str;
+            currentBoss = new Mob()
+            {
+                Name = boss.Name,
+                BaseSkill = boss.BaseSkill,
+                Stats = new Stats()
+                {
+                    Dex = boss.Stats.Dex,
+                    Int = boss.Stats.Int,
+                    Vit = boss.Stats.Vit,
+                    Str = boss.Stats.Str
+                },
+                BaseHP = boss.BaseHP,
+                BaseDamage = boss.BaseDamage,
+                BaseDefense = boss.BaseDefense,
+                LeaveTime = DateTime.Now.TimeOfDay.TotalMilliseconds + boss.LeaveTime*1000,
+                Level = boss.Level,
+                State = 1,
+                Loot = new Loot() {Gold=boss.Loot.Gold*boss.Level, EXP=boss.Loot.EXP*boss.Level }
+            };
+            currentBoss.MaxHP = Utils.CalculateMaxHP(currentBoss);
+            currentBoss.HP = currentBoss.MaxHP;
+            currentBoss.BaseDamage = Utils.CalculateDamage(currentBoss);
+            currentBoss.BaseSkill.Expiration = DateTime.Now.TimeOfDay.TotalMilliseconds + SkillManager.Instance.GetSkillCooldown(currentBoss.BaseSkill.ID);
+            DiscordManager.Instance.SendMessage($"New Boss spawned!\n{DisplayCurrentBoss()}");
+        }
+
+        public bool IsBossAlive()
+        {
+            return currentBoss != null;
         }
         void BossAttack()
         {
             if(currentBoss!=null)
             {
-                if(currentBoss.BaseSkill.CanBeCasted())
+                currentBoss.Tick();
+                if (currentBoss.isAlive())
                 {
-                    currentBoss.CastBaseSkill(null);
+                    if (PlayerManager.Instance.isSomeoneAlive())
+                    {
+                        if (currentBoss.BaseSkill.CanBeCasted())
+                        {
+                            Player p = PlayerManager.Instance.GetRandomPlayer();
+                            while (!p.isAlive())
+                            {
+                                p = PlayerManager.Instance.GetRandomPlayer();
+                            }
+                            currentBoss.CastBaseSkill(new Entity[] { p });
+                        }
+                    }
                 }
+                else
+                {
+                    DiscordManager.Instance.SendMessage($"{currentBoss.Name} was killed by {PlayerManager.Instance.GetPlayerByID(lastBossKiller).Name}");
+                    lastBossKiller = 0;
+                }
+
+              
+                
             }
         }
         private void CheckBoss()
@@ -97,8 +178,8 @@ namespace RPGBot
         }
         public void Tick()
         {
-            CheckBoss();
             BossAttack();
+            CheckBoss();
         }
         private void LoadBosses()
         {

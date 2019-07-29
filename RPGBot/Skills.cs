@@ -10,14 +10,35 @@ namespace RPGBot
     {
         public void SkillCapac(Entity caster, Entity[] targets)
         {
-            Console.WriteLine($"{caster.Name} Casted Capac");
-            DiscordManager.Instance.Channel.SendMessageAsync($"{caster.Name} Casted Capac");
+            Console.WriteLine();
+
+            if (targets != null)
+            {
+                foreach (Entity e in targets)
+                {
+                    double damage = 2 * caster.CalculateDamage();
+                    damage = e.TakeDamage(damage);
+                    
+                    DiscordManager.Instance.SendCastMessage(caster, e, SkillManager.Instance.GetSkillByID(caster.BaseSkill.ID).Name, damage);
+
+                }
+            }
+            
         }
 
         public void SkillBaseDamage(Entity caster, Entity[] targets)
         {
             Console.WriteLine($"{caster.Name} Casted Base Damage");
-            DiscordManager.Instance.Channel.SendMessageAsync($"{caster.Name} Casted Base Damage");
+            if (targets != null)
+            {
+                foreach(Entity e in targets)
+                {
+                    double damage = caster.CalculateDamage();
+                    damage = e.TakeDamage(damage);
+                    DiscordManager.Instance.SendCastMessage(caster, e, "Base Damage", damage);
+                }
+            }
+            
         }
     }
 }

@@ -18,7 +18,7 @@ namespace RPGBot
         public void ClassesCommand(DiscordSocketClient client, SocketMessage message)
         {
             if (message != null)
-                message.Channel.SendMessageAsync(ClassManager.Instance.ShortDisplayString());
+                DiscordManager.Instance.SendMessage(ClassManager.Instance.ShortDisplayString());
         }
 
         public void HelpCommand(DiscordSocketClient client, SocketMessage message)
@@ -36,7 +36,7 @@ namespace RPGBot
                 {
                     response = CommandManager.Instance.GetHelp(args[0]);
                 }
-                message.Channel.SendMessageAsync(response);
+                DiscordManager.Instance.SendMessage(response);
             }
         }
 
@@ -53,20 +53,56 @@ namespace RPGBot
                     if(PlayerManager.Instance.PlayerExists((long)id))
                     {
                         Player p = PlayerManager.Instance.GetPlayerByID((long)id);
-                        message.Channel.SendMessageAsync(p.CastBaseSkill(null));
+                        Mob boss = MobManager.Instance.GetCurrentBoss();
+                        if(boss!=null)
+                            DiscordManager.Instance.SendMessage(p.CastBaseSkill(new Entity[] { boss }));
+                        else
+                        {
+                            DiscordManager.Instance.SendMessage(MobManager.Instance.DisplayCurrentBoss());
+                        }
                     }
                     else
                     {
-                        message.Channel.SendMessageAsync($"{message.Author.Username} you do not have a character. Use ***create*** command to create one.");
+                        DiscordManager.Instance.SendMessage($"{message.Author.Username} you do not have a character. Use ***create*** command to create one.");
                     }
                 }
-                else
-                {
-                    response = CommandManager.Instance.GetHelp(args[0]);
-                }
-                message.Channel.SendMessageAsync(response);
+                DiscordManager.Instance.SendMessage(response);
             }
         }
+
+        public void MeCommand(DiscordSocketClient client, SocketMessage message)
+        {
+
+            if (message != null)
+            {
+                string[] args = Utils.GetCommandArgs(message.Content);
+                string response = "";
+                if (args == null)
+                {
+                    ulong id = message.Author.Id;
+                    if (PlayerManager.Instance.PlayerExists((long)id))
+                    {
+                        Player p = PlayerManager.Instance.GetPlayerByID((long)id);
+                        DiscordManager.Instance.SendMessage(p.ShortDisplayString()));
+                    }
+                    else
+                    {
+                        DiscordManager.Instance.SendMessage($"{message.Author.Username} you do not have a character. Use ***create*** command to create one.");
+                    }
+                }
+                DiscordManager.Instance.SendMessage(response);
+            }
+        }
+
+        public void BossCommand(DiscordSocketClient client, SocketMessage message)
+        {
+
+            if (message != null)
+            {
+                DiscordManager.Instance.SendMessage(MobManager.Instance.DisplayCurrentBoss());
+            }
+        }
+
 
         public void CreateCommand(DiscordSocketClient client, SocketMessage message)
         {

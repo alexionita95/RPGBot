@@ -51,6 +51,13 @@ namespace RPGBot
                     {
                        caster.BaseSkill.Expiration = DateTime.Now.TimeOfDay.TotalMilliseconds + skill.BaseCooldown*1000; 
                        method.Invoke(skillsMethds, new object[] { caster, targets });
+                        if (caster is Player)
+                        {
+                            if (MobManager.Instance.GetCurrentBoss().HP < 0)
+                            {
+                                MobManager.Instance.LastBossKiller = caster.ID;
+                            }
+                        }
                     }, DateTime.Now.TimeOfDay.TotalMilliseconds + skill.CastDuration * 1000);
 
                     casting.Add(cast);
@@ -65,15 +72,31 @@ namespace RPGBot
                     {
                         Tuple<long, Action, double> cast = new Tuple<long, Action, double>(caster.ID, () =>
                         {
-                            caster.BaseSkill.Expiration = DateTime.Now.TimeOfDay.TotalMilliseconds + 60 * 1000;
+                            caster.BaseSkill.Expiration = DateTime.Now.TimeOfDay.TotalMilliseconds+GetSkillCooldown(-1);
                             method.Invoke(skillsMethds, new object[] { caster, targets });
-                        }, DateTime.Now.TimeOfDay.TotalMilliseconds + 1 * 1000);
+                            if (caster is Player)
+                            {
+                                if (MobManager.Instance.GetCurrentBoss().HP < 0)
+                                {
+                                    MobManager.Instance.LastBossKiller = caster.ID;
+                                }
+                            }
+                        }, DateTime.Now.TimeOfDay.TotalMilliseconds + 1000);
 
                         casting.Add(cast);
                     }
                 }
             }
         }
+
+        public double GetSkillCooldown(long id)
+        {
+            if (id == -1)
+                return 30000;
+            else
+                return GetSkillByID(id).BaseCooldown * 1000;
+        }
+
         public void CastSkill(int id,Entity caster, Entity[] targets)
         {
             ClassSkill skill = GetSkillByID(id);
@@ -82,10 +105,17 @@ namespace RPGBot
                 MethodInfo method = typeof(Skills).GetMethod(skill.Method);
                 if (method != null)
                 {
-                    Tuple<long, Action, double> cast = new Tuple<long, Action, double>(caster.ID, () => 
+                    Tuple<long, Action, double> cast = new Tuple<long, Action, double>(caster.ID, () =>
                     {
-                        
+
                         method.Invoke(skillsMethds, new object[] { caster, targets });
+                        if (caster is Player)
+                        {
+                            if (MobManager.Instance.GetCurrentBoss().HP < 0)
+                            {
+                                MobManager.Instance.LastBossKiller = caster.ID;
+                            }
+                        }
                     }, DateTime.Now.TimeOfDay.TotalMilliseconds + skill.CastDuration * 1000);
 
                     casting.Add(cast);
@@ -109,9 +139,10 @@ namespace RPGBot
     
             foreach(Tuple<long,Action,double> cast in casting)
             {
-                if(cast.Item3 > DateTime.Now.TimeOfDay.TotalMilliseconds)
+                if(cast.Item3 < DateTime.Now.TimeOfDay.TotalMilliseconds)
                 {
                     cast.Item2();
+                    toRemove.Add(cast);
                 }
             }
             foreach(Tuple<long, Action, double> r in toRemove)

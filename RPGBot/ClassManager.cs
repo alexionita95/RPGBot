@@ -67,6 +67,17 @@ namespace RPGBot
             }
             return null;
         }
+        public Class GetClassByID(long id)
+        {
+            foreach (Class c in classes)
+            {
+                if (c.ID.Equals(id))
+                {
+                    return c;
+                }
+            }
+            return null;
+        }
         public void SaveClasses()
         {
             string json = JsonConvert.SerializeObject(classes);

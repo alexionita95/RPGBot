@@ -17,6 +17,8 @@ namespace RPGBot
 
         [JsonProperty("hp")]
         public double HP { get; set; }
+        [JsonProperty("max_hp")]
+        public double MaxHP { get; set; }
 
         [JsonProperty("class")]
         public long Class { get; set; }
@@ -24,7 +26,7 @@ namespace RPGBot
         [JsonProperty("level")]
         public long Level { get; set; }
         [JsonProperty("gold")]
-        public long Gold { get; set; }
+        public double Gold { get; set; }
 
         [JsonProperty("stats")]
         public Stats Stats { get; set; }
@@ -43,35 +45,67 @@ namespace RPGBot
         public string CastBaseSkill(Entity[] targets)
         {
             string result = "";
-            if(BaseSkill.CanBeCasted())
+            if (isAlive())
             {
-                SkillManager.Instance.CastBaseSkill(this, targets);
+                if (BaseSkill.CanBeCasted())
+                {
+                    SkillManager.Instance.CastBaseSkill(this, targets);
+                }
+                else
+                {
+                    double now = DateTime.Now.TimeOfDay.TotalMilliseconds;
+                    double exp = BaseSkill.Expiration;
+                    double seconds = exp - now;
+                    return $"{Name}'s base skill is cooling down: {Utils.FormatSeconds(seconds / 1000)}";
+                }
             }
             else
             {
-                double now = DateTime.Now.TimeOfDay.TotalMilliseconds;
-                double exp = BaseSkill.Expiration;
-                double seconds = exp - now;
-                return $"{Name}'s base skill is cooling down: {Utils.FormatSeconds(seconds/1000)}";
+                return $"{Name} you are dead. You will be revived in: {Utils.FormatSeconds(Utils.GetTimeDifference(ReviveTime) / 1000)}";
             }
             return result;
         }
         public string Die()
         {
-            State = 0;
-            ReviveTime = Utils.GetReviveTime(300);
-            return $"{Name} died";
+            return null;
         }
         public string Revive()
         {
             State = 1;
             ReviveTime = 0;
+            HP = MaxHP;
             return $"{Name} has been revived";
         }
         public bool isAlive()
         {
             return State == 1;
 
+        }
+        public double CalculateDamage()
+        {
+            if (this is Player)
+                return ClassManager.Instance.GetClassByID(Class).BaseDamage + Stats.Str * 10;
+            else
+                return ((Mob)this).BaseDamage + this.Stats.Str * 10;
+        }
+        public double CalculateDefense()
+        {
+            if (this is Player)
+                return ClassManager.Instance.GetClassByID(Class).BaseDefense;
+            else
+                return ((Mob)this).BaseDefense;
+        }
+        public double TakeDamage(double damage)
+        {
+            double newDamage = damage - CalculateDefense();
+            if (newDamage < 0)
+                newDamage = 0;
+            HP -= newDamage;
+            return newDamage;
+        }
+        public string ShortDisplayString()
+        {
+            return "";
         }
         public void Tick()
         {

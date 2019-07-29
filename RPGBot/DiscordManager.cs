@@ -82,6 +82,34 @@ namespace RPGBot
             return null;
         }
 
+        public bool IsOnline(long id)
+        {
+            foreach (SocketGuildUser u in server.Users)
+                if (u.Id==(ulong)id && u.Status == UserStatus.Online)
+                    return true;
+            return false;
+        }
+
+        public void SendCastMessage(Entity caster, Entity target, string skillName, double damage)
+        {
+            SendMessage($"{caster.Name} casted {skillName} on {target.Name} (-{damage} HP). Remaning HP: {target.HP}");
+        }
+
+        public void SendLevelUpMessage(Player player)
+        {
+            SendMessage($"{player.Name} leveled up and is now level {player.Level}");
+        }
+
+        public void SendLootMessage(string name, double exp, double gold)
+        {
+            SendMessage($"{name} received {exp} EXP and {gold} Gold");
+        }
+
+        public void SendMessage(string message)
+        {
+            Channel.SendMessageAsync(Utils.GetCodeText(message));
+        }
+
         private Task _client_Ready()
         {
             server = GetServer();
@@ -89,7 +117,7 @@ namespace RPGBot
             {
                 channel = GetChannel();
             }
-            channel.SendMessageAsync("RPG Bot ready");
+            SendMessage("RPG Bot ready");
             if(ready!=null)
             {
                 ready();
