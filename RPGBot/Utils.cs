@@ -39,7 +39,7 @@ namespace RPGBot
             return $"```{text}```";
         }
 
-        public static double GetReviveTime(double value)
+        public static double GetTime(double value)
         {
             return DateTime.Now.TimeOfDay.TotalMilliseconds + value*1000;
         }
@@ -82,9 +82,28 @@ namespace RPGBot
             }*/
             if (entity is Player)
             {
-                return entity.Stats.Vit*2;
+                return 0.05*entity.Stats.Vit;
             }
             return 0;
+        }
+            public static double Remap(double value, double from1, double to1, double from2, double to2)
+            {
+                return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+            }
+        public static string GetPrettyBar(double value, double max)
+        {
+            int barLength = 10;
+            string bar = "";
+            int v = (int)Math.Floor(Remap(value, 0, max, 0, barLength));
+            for (int i = 0; i < v; ++i)
+            {
+                bar += "▮";
+            }
+            for(int i=v;i<barLength; ++i)
+            {
+                bar += "▯";
+            }
+            return bar;
         }
 
 

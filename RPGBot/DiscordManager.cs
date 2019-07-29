@@ -92,7 +92,7 @@ namespace RPGBot
 
         public void SendCastMessage(Entity caster, Entity target, string skillName, double damage)
         {
-            SendMessage($"{caster.Name} casted {skillName} on {target.Name} (-{damage} HP). Remaning HP: {target.HP}");
+            SendMessage($"{caster.Name} casted {skillName} on {target.Name} (-{damage} HP). Remaning HP: {Math.Floor(target.HP)}");
         }
 
         public void SendLevelUpMessage(Player player)

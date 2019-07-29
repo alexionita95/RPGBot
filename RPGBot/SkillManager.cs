@@ -107,7 +107,7 @@ namespace RPGBot
                 {
                     Tuple<long, Action, double> cast = new Tuple<long, Action, double>(caster.ID, () =>
                     {
-
+                        caster.GetSkillByID(id).Expiration = Utils.GetTime(skill.BaseCooldown);
                         method.Invoke(skillsMethds, new object[] { caster, targets,skill});
                         if (caster is Player)
                         {

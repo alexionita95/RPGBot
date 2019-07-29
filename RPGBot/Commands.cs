@@ -114,6 +114,37 @@ namespace RPGBot
                         DiscordManager.Instance.SendMessage($"{message.Author.Username} you do not have a character. Use ***create*** command to create one.");
                     }
                 }
+                else
+                {
+                    Player p = null;
+                    ulong id = message.Author.Id;
+                    if (PlayerManager.Instance.PlayerExists((long)id))
+                    {
+                        p = PlayerManager.Instance.GetPlayerByID((long)id);
+                    }
+                    else
+                    {
+                        p = null;
+                        DiscordManager.Instance.SendMessage($"{message.Author.Username} you do not have a character. Use ***create*** command to create one.");
+                    }
+                    if (p != null)
+                    {
+                        switch (args[0].ToLower())
+                        {
+                            case "stats":
+                                {
+
+                                    DiscordManager.Instance.SendMessage(p.StatsString());
+                                }
+                                break;
+                            case "skills":
+                                {
+                                    DiscordManager.Instance.SendMessage(p.SkillsString());
+                                }
+                                break;
+                        }
+                    }
+                }
                 DiscordManager.Instance.SendMessage(response);
             }
         }

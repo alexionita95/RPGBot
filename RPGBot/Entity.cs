@@ -170,6 +170,14 @@ namespace RPGBot
         {
             return "";
         }
+        public string StatsString()
+        {
+            return "";
+        }
+        public new string SkillsString()
+        {
+            return "";
+        }
         public void Tick()
         {
 
