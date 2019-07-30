@@ -26,7 +26,7 @@ namespace RPGBot
         public string ShortDisplayString()
         {
             ClassSkill s = SkillManager.Instance.GetSkillByID(ID);
-            return $"Name: {s.Name}\nCast duration:{Utils.FormatSeconds(s.CastDuration)}\nCooldown:{Utils.FormatSeconds(s.BaseCooldown)}\nTime until next cast: {Utils.FormatSeconds(Utils.GetTimeDifference(Expiration)/1000)}\n____________________________";
+            return $"Name: {s.Name}\nCast duration:{Utils.FormatSeconds(s.CastDuration)}\nCooldown:{Utils.FormatSeconds(s.BaseCooldown)}\nTime until next cast: {Utils.FormatSeconds(Utils.GetTimeDifference(Expiration) / 1000)}\n____________________________";
         }
     }
 

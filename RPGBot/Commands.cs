@@ -11,7 +11,7 @@ namespace RPGBot
     {
         public void HelloCommand(DiscordSocketClient client, SocketMessage message)
         {
-            if(message !=null)
+            if (message != null)
                 message.Channel.SendMessageAsync("Hello there");
         }
 
@@ -28,7 +28,7 @@ namespace RPGBot
             {
                 string[] args = Utils.GetCommandArgs(message.Content);
                 string response = "";
-                if (args==null)
+                if (args == null)
                 {
                     response = CommandManager.Instance.GetHelp(null);
                 }
@@ -50,11 +50,11 @@ namespace RPGBot
                 if (args == null)
                 {
                     ulong id = message.Author.Id;
-                    if(PlayerManager.Instance.PlayerExists((long)id))
+                    if (PlayerManager.Instance.PlayerExists((long)id))
                     {
                         Player p = PlayerManager.Instance.GetPlayerByID((long)id);
                         Mob boss = MobManager.Instance.GetCurrentBoss();
-                        if(boss!=null)
+                        if (boss != null)
                             DiscordManager.Instance.SendMessage(p.CastBaseSkill(new Entity[] { boss }));
                         else
                         {
@@ -87,7 +87,7 @@ namespace RPGBot
                     if (PlayerManager.Instance.PlayerExists((long)id))
                     {
                         Player p = PlayerManager.Instance.GetPlayerByID((long)id);
-                        DiscordManager.Instance.SendMessage(p.CastSkill(args[0],null));
+                        DiscordManager.Instance.SendMessage(p.CastSkill(args[0], null));
                     }
                 }
                 DiscordManager.Instance.SendMessage(response);

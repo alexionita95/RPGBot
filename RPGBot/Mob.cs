@@ -33,7 +33,7 @@ namespace RPGBot
             if (Utils.GetTimeDifference(BaseSkill.Expiration) < 0)
                 BaseSkill.Expiration = 0;
 
-            if(HP < 0)
+            if (HP < 0)
             {
                 Die();
             }
@@ -48,7 +48,7 @@ namespace RPGBot
 
         public new string ShortDisplayString()
         {
-            return $"Name: {Name}\nHP: {Utils.GetPrettyBar(HP,MaxHP)}({HP}/{MaxHP})\nLevel:{Level}\nLeaves in:{Utils.FormatSeconds(Utils.GetTimeDifference(LeaveTime) / 1000)}\nTime until next attack:{Utils.FormatSeconds(Utils.GetTimeDifference(BaseSkill.Expiration) / 1000)}";
+            return $"Name: {Name}\nHP: {Utils.GetPrettyBar(HP, MaxHP)}({HP}/{MaxHP})\nLevel:{Level}\nLeaves in:{Utils.FormatSeconds(Utils.GetTimeDifference(LeaveTime) / 1000)}\nTime until next attack:{Utils.FormatSeconds(Utils.GetTimeDifference(BaseSkill.Expiration) / 1000)}";
         }
 
     }

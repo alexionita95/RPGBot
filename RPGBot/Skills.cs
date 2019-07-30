@@ -20,7 +20,7 @@ namespace RPGBot
                     e.TakeDamage(caster, SkillManager.Instance.GetSkillByID(caster.BaseSkill.ID).Name, 2);
                 }
             }
-            
+
         }
         public void SkillParizer(Entity caster, Entity[] targets, ClassSkill skill)
         {
@@ -35,13 +35,13 @@ namespace RPGBot
             Console.WriteLine($"{caster.Name} Casted Base Damage");
             if (targets != null)
             {
-                foreach(Entity e in targets)
+                foreach (Entity e in targets)
                 {
                     double damage = caster.CalculateDamage();
-                    damage = e.TakeDamage(caster,"Base Damage",1);
+                    damage = e.TakeDamage(caster, "Base Damage", 1);
                 }
             }
-            
+
         }
     }
 }

@@ -10,7 +10,7 @@ namespace RPGBot
     {
         public static void InitializeSkills()
         {
-            if(!File.Exists("skills.json"))
+            if (!File.Exists("skills.json"))
             {
                 ClassSkill s = new ClassSkill();
 

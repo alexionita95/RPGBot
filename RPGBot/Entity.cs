@@ -94,7 +94,7 @@ namespace RPGBot
                         Skill s = GetSkillByID(skill.ID);
                         if (s.CanBeCasted())
                         {
-                            SkillManager.Instance.CastSkill(s.ID,this, targets);
+                            SkillManager.Instance.CastSkill(s.ID, this, targets);
                         }
                         else
                         {
@@ -153,15 +153,15 @@ namespace RPGBot
         }
         public double CalculateCritValue()
         {
-            return 0.01*Stats.Str+0.001*Stats.Int+0.005*Stats.Dex;
-        }
-        
-        public double CalculateDodgeChance()
-        {
-            return 0.001*Stats.Int + 0.01*Stats.Dex;
+            return 0.01 * Stats.Str + 0.001 * Stats.Int + 0.005 * Stats.Dex;
         }
 
-        public double TakeDamage(Entity from, string skill,double multiplyer)
+        public double CalculateDodgeChance()
+        {
+            return 0.001 * Stats.Int + 0.01 * Stats.Dex;
+        }
+
+        public double TakeDamage(Entity from, string skill, double multiplyer)
         {
             double damage = multiplyer * from.CalculateDamage();
             bool critical = false;
@@ -173,20 +173,20 @@ namespace RPGBot
                 damage = (1 + critValue) * damage;
                 critical = true;
             }
-            
+
             double newDamage = damage - CalculateDefense();
             if (newDamage < 0)
                 newDamage = 0;
             Random rand2 = new Random();
             double dodgeChance = rand.NextDouble();
             bool dodge = false;
-            if(dodgeChance > 1-CalculateDodgeChance())
+            if (dodgeChance > 1 - CalculateDodgeChance())
             {
                 dodge = true;
             }
-            if(dodge)
+            if (dodge)
             {
-                
+
                 DiscordManager.Instance.SendMessage($"{from.Name} casted {skill} on {this.Name} and missed.");
             }
             else
@@ -207,7 +207,7 @@ namespace RPGBot
 
         public void Heal(double amount)
         {
-            if(isAlive())
+            if (isAlive())
             {
                 if (HP < MaxHP)
                     HP += amount;

@@ -32,30 +32,21 @@ namespace RPGBot
         }
         public void LoadCommands()
         {
-            using (StreamReader sr = new StreamReader("commands.json"))
+            string json = GameManager.Instance.DataManager.GetDataFrom("commands");
+            if (json != null)
             {
-                if(sr!=null)
-                {
-                    string json = sr.ReadToEnd();
-                    commands = JsonConvert.DeserializeObject<List<Command>>(json);
-                    sr.Close();
-                }
+                commands = JsonConvert.DeserializeObject<List<Command>>(json);
+
             }
         }
         public void SaveCommands()
         {
-            string json = JsonConvert.SerializeObject(commands,Formatting.Indented);
-            Console.WriteLine(json);
-            using (StreamWriter sw = new StreamWriter("commands.json",false))
-            {
-                sw.Write(json);
-                sw.Flush();
-                sw.Close();
-            }
+            string json = JsonConvert.SerializeObject(commands, Formatting.Indented);
+            GameManager.Instance.DataManager.SaveDataTo("commands", json);
         }
         public void AddCommand(Command c)
         {
-            foreach(string cmd in c.Commands)
+            foreach (string cmd in c.Commands)
             {
                 if (CommandExists(cmd))
                     return;
@@ -88,7 +79,7 @@ namespace RPGBot
                 MethodInfo method = typeof(Commands).GetMethod(c.Method);
                 if (method != null)
                 {
-                    method.Invoke(commandsMethods,new object[]{client,message});
+                    method.Invoke(commandsMethods, new object[] { client, message });
                 }
             }
         }
@@ -108,8 +99,8 @@ namespace RPGBot
             else
             {
                 string result = "Possible commands\n";
-                for(int i=0;i<commands.Count-1;++i)
-                    result += commands[i].DisplayShortString()+" ";
+                for (int i = 0; i < commands.Count - 1; ++i)
+                    result += commands[i].DisplayShortString() + " ";
                 result += commands[commands.Count - 1].DisplayShortString();
 
                 return Utils.GetCodeText(result);

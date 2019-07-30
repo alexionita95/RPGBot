@@ -15,7 +15,7 @@ namespace RPGBot
         public static void Main(string[] args)
          => new Program().MainAsync().GetAwaiter().GetResult();
 
-        
+
         private Thread worker;
 
 
@@ -23,6 +23,7 @@ namespace RPGBot
 
         public async Task MainAsync()
         {
+            GameManager.Instance.Init(typeof(FileDataManager));
             CommandManager.Instance.LoadCommands();
             Config.Instance.Init();
             ClassManager.Instance.Init();
@@ -38,7 +39,7 @@ namespace RPGBot
         {
             worker.Start();
         }
-        
+
         bool running = true;
         private void backgroundTask()
         {

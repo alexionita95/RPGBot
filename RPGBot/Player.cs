@@ -33,10 +33,10 @@
             {
                 if (HP < 0)
                 {
-                    DiscordManager.Instance.SendImageMessage(Die(),"https://i.imgur.com/RSbBJEO.gif ");
+                    DiscordManager.Instance.SendImageMessage(Die(), "https://i.imgur.com/RSbBJEO.gif ");
                 }
             }
-            if(EXP > NeededEXP)
+            if (EXP > NeededEXP)
             {
                 EXP -= NeededEXP;
                 ++Level;
@@ -66,7 +66,7 @@
         }
         public new string ShortDisplayString()
         {
-            return $"Name: {Name}\nHP: {Utils.GetPrettyBar(HP,MaxHP)} ({Math.Floor(HP)}/{MaxHP})\nEXP: {Utils.GetPrettyBar(EXP,NeededEXP)}({EXP}/{NeededEXP})\nLevel:{Level}\nGold:{Gold}";
+            return $"Name: {Name}\nHP: {Utils.GetPrettyBar(HP, MaxHP)} ({Math.Floor(HP)}/{MaxHP})\nEXP: {Utils.GetPrettyBar(EXP, NeededEXP)}({EXP}/{NeededEXP})\nLevel:{Level}\nGold:{Gold}";
         }
         public new string StatsString()
         {
@@ -74,7 +74,7 @@
         }
         public new string AttributesString()
         {
-            return $"ATTRIBUTES\nName: {Name}\nDamage: {CalculateDamage()}\nDefense:{CalculateDefense()}\nDodge Chance:{Math.Floor(CalculateDodgeChance()*100)}%\nCrit Chance:{Math.Floor(CalculateCritChance() * 100)}%\nCrit Value:{Math.Floor(CalculateCritValue() * 100)}%";
+            return $"ATTRIBUTES\nName: {Name}\nDamage: {CalculateDamage()}\nDefense:{CalculateDefense()}\nDodge Chance:{Math.Floor(CalculateDodgeChance() * 100)}%\nCrit Chance:{Math.Floor(CalculateCritChance() * 100)}%\nCrit Value:{Math.Floor(CalculateCritValue() * 100)}%";
         }
         public new string SkillsString()
         {
@@ -88,5 +88,5 @@
     }
 
 
-    
+
 }

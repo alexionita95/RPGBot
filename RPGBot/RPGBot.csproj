@@ -148,9 +148,13 @@
     <Compile Include="CommandManager.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="DatabaseDataManager.cs" />
     <Compile Include="DiscordManager.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="FileDataManager.cs" />
     <Compile Include="FilesInitializer.cs" />
+    <Compile Include="GameManager.cs" />
+    <Compile Include="IDataManager.cs" />
     <Compile Include="Loot.cs" />
     <Compile Include="Mob.cs" />
     <Compile Include="MobManager.cs" />

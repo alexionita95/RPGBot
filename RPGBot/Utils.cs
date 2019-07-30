@@ -41,7 +41,7 @@ namespace RPGBot
 
         public static double GetTime(double value)
         {
-            return DateTime.Now.TimeOfDay.TotalMilliseconds + value*1000;
+            return DateTime.Now.TimeOfDay.TotalMilliseconds + value * 1000;
         }
         public static double CalculateNeededEXP(long level)
         {
@@ -50,11 +50,11 @@ namespace RPGBot
 
         public static double CalculateMaxHP(Entity entity)
         {
-            if(entity is Mob)
+            if (entity is Mob)
             {
-                return ((Mob)entity).BaseHP + entity.Level*entity.Stats.Vit * 100;
+                return ((Mob)entity).BaseHP + entity.Level * entity.Stats.Vit * 100;
             }
-            if(entity is Player)
+            if (entity is Player)
             {
                 return ClassManager.Instance.GetClassByID(entity.Class).BaseHP + entity.Stats.Vit * 100;
             }
@@ -65,7 +65,7 @@ namespace RPGBot
         {
             if (entity is Mob)
             {
-                return ((Mob)entity).BaseDamage + entity.Level*entity.Stats.Str * 5;
+                return ((Mob)entity).BaseDamage + entity.Level * entity.Stats.Str * 5;
             }
             if (entity is Player)
             {
@@ -76,20 +76,20 @@ namespace RPGBot
 
         public static double CalculateHeal(Entity entity)
         {
-           /* if (entity is Mob)
-            {
-                return ((Mob)entity).BaseDamage + entity.Level * entity.Stats.Str * 5;
-            }*/
+            /* if (entity is Mob)
+             {
+                 return ((Mob)entity).BaseDamage + entity.Level * entity.Stats.Str * 5;
+             }*/
             if (entity is Player)
             {
-                return 0.05*entity.Stats.Vit;
+                return 0.05 * entity.Stats.Vit;
             }
             return 0;
         }
-            public static double Remap(double value, double from1, double to1, double from2, double to2)
-            {
-                return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
-            }
+        public static double Remap(double value, double from1, double to1, double from2, double to2)
+        {
+            return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+        }
         public static string GetPrettyBar(double value, double max)
         {
             int barLength = 10;
@@ -99,7 +99,7 @@ namespace RPGBot
             {
                 bar += "▮";
             }
-            for(int i=v;i<barLength; ++i)
+            for (int i = v; i < barLength; ++i)
             {
                 bar += "▯";
             }

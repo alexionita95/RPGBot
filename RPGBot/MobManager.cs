@@ -27,12 +27,14 @@ namespace RPGBot
         private static MobManager instance;
         public static MobManager Instance
         {
-            get {
-                if(instance == null)
+            get
+            {
+                if (instance == null)
                 {
                     instance = new MobManager();
                 }
-                return instance; }
+                return instance;
+            }
         }
         private MobManager()
         {
@@ -47,7 +49,7 @@ namespace RPGBot
 
         public Mob GetCurrentBoss()
         {
-            if(currentBoss !=null)
+            if (currentBoss != null)
             {
                 if (currentBoss.isAlive())
                     return currentBoss;
@@ -56,7 +58,7 @@ namespace RPGBot
         }
         public Mob GetBossByID(long id)
         {
-            foreach(Mob m in bosses)
+            foreach (Mob m in bosses)
             {
                 if (m.ID == id)
                     return m;
@@ -69,7 +71,7 @@ namespace RPGBot
         }
         public string DisplayCurrentBoss()
         {
-            if(currentBoss== null)
+            if (currentBoss == null)
             {
                 return DisplayTimeUntilNextBoss();
             }
@@ -105,10 +107,10 @@ namespace RPGBot
                 BaseHP = boss.BaseHP,
                 BaseDamage = boss.BaseDamage,
                 BaseDefense = boss.BaseDefense,
-                LeaveTime = DateTime.Now.TimeOfDay.TotalMilliseconds + boss.LeaveTime*1000,
+                LeaveTime = DateTime.Now.TimeOfDay.TotalMilliseconds + boss.LeaveTime * 1000,
                 Level = boss.Level,
                 State = 1,
-                Loot = new Loot() {Gold=boss.Loot.Gold*boss.Level, EXP=boss.Loot.EXP*boss.Level }
+                Loot = new Loot() { Gold = boss.Loot.Gold * boss.Level, EXP = boss.Loot.EXP * boss.Level }
             };
             currentBoss.MaxHP = Utils.CalculateMaxHP(currentBoss);
             currentBoss.HP = currentBoss.MaxHP;
@@ -123,7 +125,7 @@ namespace RPGBot
         }
         void BossAttack()
         {
-            if(currentBoss!=null)
+            if (currentBoss != null)
             {
                 currentBoss.Tick();
                 if (currentBoss.isAlive())
@@ -148,8 +150,8 @@ namespace RPGBot
                     lastBossKiller = 0;
                 }
 
-              
-                
+
+
             }
         }
         private void CheckBoss()
@@ -168,7 +170,7 @@ namespace RPGBot
                     }
                     else
                     {
-                        if(Utils.GetTimeDifference(currentBoss.LeaveTime)<0)
+                        if (Utils.GetTimeDifference(currentBoss.LeaveTime) < 0)
                         {
                             DiscordManager.Instance.SendMessage($"{currentBoss.Name} left");
                             DiscordManager.Instance.SendNormalMessage("https://i.imgur.com/p06VNJM.png ");
@@ -179,7 +181,7 @@ namespace RPGBot
             }
             else
             {
-                if(Utils.GetTimeDifference(timeUntilNextBoss)<0)
+                if (Utils.GetTimeDifference(timeUntilNextBoss) < 0)
                 {
                     timeUntilNextBoss = 0;
                     SpawnBoss();
@@ -193,21 +195,10 @@ namespace RPGBot
         }
         private void LoadBosses()
         {
-            if (File.Exists("bosses.json"))
+            string json = GameManager.Instance.DataManager.GetDataFrom("bosses");
+            if (json != null)
             {
-                using (StreamReader sr = new StreamReader("bosses.json"))
-                {
-                    if (sr != null)
-                    {
-                        string json = sr.ReadToEnd();
-                        bosses = JsonConvert.DeserializeObject<List<Mob>>(json);
-                        sr.Close();
-                    }
-                    else
-                    {
-                        bosses = new List<Mob>();
-                    }
-                }
+                bosses = JsonConvert.DeserializeObject<List<Mob>>(json);
             }
             else
             {
@@ -217,32 +208,17 @@ namespace RPGBot
         public void SaveBosses()
         {
             string json = JsonConvert.SerializeObject(bosses, Formatting.Indented);
-            Console.WriteLine(json);
-            using (StreamWriter sw = new StreamWriter("bosses.json", false))
-            {
-                sw.Write(json);
-                sw.Flush();
-                sw.Close();
-            }
+            GameManager.Instance.DataManager.SaveDataTo("bosses", json);
         }
 
         private void LoadMinions()
         {
-            if (File.Exists("minions.json"))
+            string json = GameManager.Instance.DataManager.GetDataFrom("minions");
+
+            if (json != null)
             {
-                using (StreamReader sr = new StreamReader("minions.json"))
-                {
-                    if (sr != null)
-                    {
-                        string json = sr.ReadToEnd();
-                        minions = JsonConvert.DeserializeObject<List<Mob>>(json);
-                        sr.Close();
-                    }
-                    else
-                    {
-                        minions = new List<Mob>();
-                    }
-                }
+
+                minions = JsonConvert.DeserializeObject<List<Mob>>(json);
             }
             else
             {
@@ -251,14 +227,8 @@ namespace RPGBot
         }
         public void SaveMinions()
         {
-            string json = JsonConvert.SerializeObject(minions);
-            Console.WriteLine(json);
-            using (StreamWriter sw = new StreamWriter("minions.json", false))
-            {
-                sw.Write(json);
-                sw.Flush();
-                sw.Close();
-            }
+            string json = JsonConvert.SerializeObject(minions, Formatting.Indented);
+            GameManager.Instance.DataManager.SaveDataTo("minions", json);
         }
     }
 }

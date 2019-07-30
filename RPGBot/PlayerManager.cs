@@ -18,7 +18,9 @@ namespace RPGBot
         private static PlayerManager instance;
         public static PlayerManager Instance
         {
-            get { if (instance == null)
+            get
+            {
+                if (instance == null)
                 {
                     instance = new PlayerManager();
                 }
@@ -31,9 +33,9 @@ namespace RPGBot
         }
         public bool PlayerExists(long id)
         {
-            foreach(Player p in players)
+            foreach (Player p in players)
             {
-                if(p.ID == id)
+                if (p.ID == id)
                 {
                     return true;
                 }
@@ -59,11 +61,11 @@ namespace RPGBot
                     return true;
             return false;
         }
-        public string AddPlayer(long id,string name, string cls)
+        public string AddPlayer(long id, string name, string cls)
         {
-            string result=$"Player {name} was created!";
+            string result = $"Player {name} was created!";
             Class cl = ClassManager.Instance.GetClassByName(cls);
-            if(cl!=null)
+            if (cl != null)
             {
                 if (!PlayerExists(id))
                 {
@@ -75,7 +77,7 @@ namespace RPGBot
                     {
                         sk.Add(new Skill() { ID = s, Expiration = 0, Level = 0 });
                     }
-                    Player p = new Player() { ID = id, Name = name, BaseSkill = b, Gold = 0, Class = cl.ID, Level = 1, Stats = st, Skills = sk, State = 1};
+                    Player p = new Player() { ID = id, Name = name, BaseSkill = b, Gold = 0, Class = cl.ID, Level = 1, Stats = st, Skills = sk, State = 1 };
                     p.MaxHP = Utils.CalculateMaxHP(p);
                     p.HP = p.MaxHP;
                     players.Add(p);
@@ -95,7 +97,7 @@ namespace RPGBot
 
         public void Tick()
         {
-            foreach(Player p in players)
+            foreach (Player p in players)
             {
                 p.Tick();
             }
@@ -106,7 +108,7 @@ namespace RPGBot
         {
             Random rand = new Random();
             int index = rand.Next(0, players.Count);
-            while(!DiscordManager.Instance.IsOnline(players[index].ID))
+            while (!DiscordManager.Instance.IsOnline(players[index].ID))
             {
                 index = rand.Next(0, players.Count);
             }
@@ -116,10 +118,10 @@ namespace RPGBot
         public void AddLoot(Loot loot)
         {
             List<string> message = new List<string>();
-            foreach(Player p in players)
+            foreach (Player p in players)
             {
-                
-                if(p.ID == MobManager.Instance.LastBossKiller)
+
+                if (p.ID == MobManager.Instance.LastBossKiller)
                 {
                     double g = 1.5 * loot.Gold;
                     double e = 1.5 * loot.EXP;
@@ -143,24 +145,14 @@ namespace RPGBot
 
         private void LoadPlayers()
         {
-            if (File.Exists("players.json"))
+            string json = GameManager.Instance.DataManager.GetDataFrom("players");
+
+            if (json != null)
             {
-                using (StreamReader sr = new StreamReader("players.json"))
+                players = JsonConvert.DeserializeObject<List<Player>>(json);
+                if (players == null)
                 {
-                    if (sr != null)
-                    {
-                        string json = sr.ReadToEnd();
-                        players = JsonConvert.DeserializeObject<List<Player>>(json);
-                        if(players==null)
-                        {
-                            players = new List<Player>();
-                        }
-                        sr.Close();
-                    }
-                    else
-                    {
-                        players = new List<Player>();
-                    }
+                    players = new List<Player>();
                 }
             }
             else
@@ -194,13 +186,7 @@ namespace RPGBot
                         }
                     }
 
-
-                    using (StreamWriter sw = new StreamWriter("players.json", false))
-                    {
-                        sw.Write(json);
-                        sw.Flush();
-                        sw.Close();
-                    }
+                    GameManager.Instance.DataManager.SaveDataTo("players", json);
                 }
             }
         }

@@ -32,7 +32,7 @@
         }
         private Config()
         {
-            
+
         }
         public void Init()
         {

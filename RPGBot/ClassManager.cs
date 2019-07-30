@@ -20,7 +20,7 @@ namespace RPGBot
             get
             {
                 if (instance == null)
-                    LoadClasses();
+                    instance = new ClassManager();
                 return instance;
 
 
@@ -28,58 +28,28 @@ namespace RPGBot
         }
         private ClassManager()
         {
-
         }
         public void Init()
         {
-            if (instance == null)
-                LoadClasses();
+            LoadClasses();
         }
-        private static async void LoadClasses()
+        private void LoadClasses()
         {
-            instance = new ClassManager();
-
-            var client = new MongoClient("mongodb+srv://alex:Demo_mec027_Y03@nanohome-rszjd.mongodb.net/test?retryWrites=true&w=majority");
-            var database = client.GetDatabase("rpgbot");
-            var collection = database.GetCollection<BsonDocument>("classes");
-            using (IAsyncCursor<BsonDocument> cursor = await collection.FindAsync(new BsonDocument()))
+            string json = GameManager.Instance.DataManager.GetDataFrom("classes");
+            if (json != null)
             {
-                while (await cursor.MoveNextAsync())
-                {
-                    IEnumerable<BsonDocument> batch = cursor.Current;
-                    BsonDocument doc = batch.ElementAt(0);
-                    string json = doc.GetElement("values").Value.ToString();
-                    instance.classes = JsonConvert.DeserializeObject<List<Class>>(json);
-
-                }
-            }
-            /*
-            if (File.Exists("classes.json"))
-            {
-                using (StreamReader sr = new StreamReader("classes.json"))
-                {
-                    if (sr != null)
-                    {
-                        string json = sr.ReadToEnd();
-                        instance.classes = JsonConvert.DeserializeObject<List<Class>>(json);
-                        sr.Close();
-                    }
-                    else
-                    {
-                        instance.classes = new List<Class>();
-                    }
-                }
+                classes = JsonConvert.DeserializeObject<List<Class>>(json);
             }
             else
             {
-                instance.classes = new List<Class>();
-            }*/
+                classes = new List<Class>();
+            }
         }
         public Class GetClassByName(string name)
         {
             foreach (Class c in classes)
             {
-                if(c.Name.ToLower().Equals(name.ToLower()))
+                if (c.Name.ToLower().Equals(name.ToLower()))
                 {
                     return c;
                 }
@@ -97,35 +67,11 @@ namespace RPGBot
             }
             return null;
         }
-        public async void SaveClasses()
+        public void SaveClasses()
         {
             string json = JsonConvert.SerializeObject(classes);
 
-            var client = new MongoClient("mongodb+srv://alex:Demo_mec027_Y03@nanohome-rszjd.mongodb.net/test?retryWrites=true&w=majority");
-            var database = client.GetDatabase("rpgbot");
-            var collection = database.GetCollection<BsonDocument>("classes");
-            using (IAsyncCursor<BsonDocument> cursor = await collection.FindAsync(new BsonDocument()))
-            {
-                while (await cursor.MoveNextAsync())
-                {
-                    IEnumerable<BsonDocument> batch = cursor.Current;
-                    BsonDocument doc = batch.ElementAt(0);
-                    doc.Set("values", json);
-                    var id = doc.GetElement("_id");
-                    var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(id.Value.ToString()));
-                    var update = Builders<BsonDocument>.Update.Set("values", json);
-                    collection.UpdateOne(filter, update);
-                   
-                }
-            }
-
-            Console.WriteLine(json);/*
-            using (StreamWriter sw = new StreamWriter("classes.json", false))
-            {
-                sw.Write(json);
-                sw.Flush();
-                sw.Close();
-            }*/
+            GameManager.Instance.DataManager.SaveDataTo("classes", json);
         }
 
         public string ShortDisplayString()

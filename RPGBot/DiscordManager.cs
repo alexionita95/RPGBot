@@ -38,7 +38,7 @@ namespace RPGBot
         {
             get
             {
-                if(instance == null)
+                if (instance == null)
                 {
                     instance = new DiscordManager();
                 }
@@ -85,7 +85,7 @@ namespace RPGBot
         public bool IsOnline(long id)
         {
             foreach (SocketGuildUser u in server.Users)
-                if (u.Id==(ulong)id && u.Status == UserStatus.Online)
+                if (u.Id == (ulong)id && u.Status == UserStatus.Online)
                     return true;
             return false;
         }
@@ -107,8 +107,8 @@ namespace RPGBot
 
         public void SendMessage(string message)
         {
-            if(message.Length != 0)
-            Channel.SendMessageAsync(Utils.GetCodeText(message));
+            if (message.Length != 0)
+                Channel.SendMessageAsync(Utils.GetCodeText(message));
         }
 
         public void SendCombinedMessage(string[] message)
@@ -116,11 +116,11 @@ namespace RPGBot
             if (message.Length != 0)
             {
                 string full = "";
-                foreach(string m in message)
+                foreach (string m in message)
                 {
                     if (message.Length != 0)
                     {
-                        full+=m+"\n";
+                        full += m + "\n";
                     }
                 }
                 Channel.SendMessageAsync(Utils.GetCodeText(full));
@@ -147,7 +147,7 @@ namespace RPGBot
                 channel = GetChannel();
             }
             SendMessage("RPG Bot ready");
-            if(ready!=null)
+            if (ready != null)
             {
                 ready();
             }

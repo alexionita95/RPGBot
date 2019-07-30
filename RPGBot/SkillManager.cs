@@ -13,7 +13,7 @@ namespace RPGBot
     {
         private static SkillManager instance;
         public List<ClassSkill> skills;
-        private List<Tuple<long,Action,double>> casting;
+        private List<Tuple<long, Action, double>> casting;
         List<Tuple<long, Action, double>> toRemove;
         Skills skillsMethds;
         public static SkillManager Instance
@@ -42,15 +42,15 @@ namespace RPGBot
         public void CastBaseSkill(Entity caster, Entity[] targets)
         {
             ClassSkill skill = GetSkillByID(caster.BaseSkill.ID);
-            if(skill!=null)
+            if (skill != null)
             {
                 MethodInfo method = typeof(Skills).GetMethod(skill.Method);
                 if (method != null)
                 {
                     Tuple<long, Action, double> cast = new Tuple<long, Action, double>(caster.ID, () =>
                     {
-                       caster.BaseSkill.Expiration = DateTime.Now.TimeOfDay.TotalMilliseconds + skill.BaseCooldown*1000; 
-                       method.Invoke(skillsMethds, new object[] { caster, targets });
+                        caster.BaseSkill.Expiration = DateTime.Now.TimeOfDay.TotalMilliseconds + skill.BaseCooldown * 1000;
+                        method.Invoke(skillsMethds, new object[] { caster, targets });
                         if (caster is Player)
                         {
                             if (MobManager.Instance.GetCurrentBoss().HP < 0)
@@ -65,14 +65,14 @@ namespace RPGBot
             }
             else
             {
-                if(caster.BaseSkill.ID==-1)
+                if (caster.BaseSkill.ID == -1)
                 {
                     MethodInfo method = typeof(Skills).GetMethod("SkillBaseDamage");
                     if (method != null)
                     {
                         Tuple<long, Action, double> cast = new Tuple<long, Action, double>(caster.ID, () =>
                         {
-                            caster.BaseSkill.Expiration = DateTime.Now.TimeOfDay.TotalMilliseconds+GetSkillCooldown(-1);
+                            caster.BaseSkill.Expiration = DateTime.Now.TimeOfDay.TotalMilliseconds + GetSkillCooldown(-1);
                             method.Invoke(skillsMethds, new object[] { caster, targets });
                             if (caster is Player)
                             {
@@ -97,7 +97,7 @@ namespace RPGBot
                 return GetSkillByID(id).BaseCooldown * 1000;
         }
 
-        public void CastSkill(long id,Entity caster, Entity[] targets)
+        public void CastSkill(long id, Entity caster, Entity[] targets)
         {
             ClassSkill skill = GetSkillByID(id);
             if (skill != null)
@@ -108,7 +108,7 @@ namespace RPGBot
                     Tuple<long, Action, double> cast = new Tuple<long, Action, double>(caster.ID, () =>
                     {
                         caster.GetSkillByID(id).Expiration = Utils.GetTime(skill.BaseCooldown);
-                        method.Invoke(skillsMethds, new object[] { caster, targets,skill});
+                        method.Invoke(skillsMethds, new object[] { caster, targets, skill });
                         if (caster is Player)
                         {
                             if (MobManager.Instance.GetCurrentBoss().HP < 0)
@@ -126,7 +126,7 @@ namespace RPGBot
 
         public ClassSkill GetSkillByID(long id)
         {
-            foreach(ClassSkill s in skills)
+            foreach (ClassSkill s in skills)
             {
                 if (s.ID == id)
                     return s;
@@ -136,39 +136,28 @@ namespace RPGBot
 
         public void Tick()
         {
-    
-            foreach(Tuple<long,Action,double> cast in casting)
+
+            foreach (Tuple<long, Action, double> cast in casting)
             {
-                if(cast.Item3 < DateTime.Now.TimeOfDay.TotalMilliseconds)
+                if (cast.Item3 < DateTime.Now.TimeOfDay.TotalMilliseconds)
                 {
                     cast.Item2();
                     toRemove.Add(cast);
                 }
             }
-            foreach(Tuple<long, Action, double> r in toRemove)
+            foreach (Tuple<long, Action, double> r in toRemove)
             {
-                casting.Remove(r);  
+                casting.Remove(r);
             }
             toRemove.Clear();
         }
 
-        private void LoadSkills ()
+        private void LoadSkills()
         {
-            if (File.Exists("skills.json"))
+            string json = GameManager.Instance.DataManager.GetDataFrom("skills");
+            if (json != null)
             {
-                using (StreamReader sr = new StreamReader("skills.json"))
-                {
-                    if (sr != null)
-                    {
-                        string json = sr.ReadToEnd();
-                        skills = JsonConvert.DeserializeObject<List<ClassSkill>>(json);
-                        sr.Close();
-                    }
-                    else
-                    {
-                        skills = new List<ClassSkill>();
-                    }
-                }
+                skills = JsonConvert.DeserializeObject<List<ClassSkill>>(json);
             }
             else
             {
@@ -184,14 +173,8 @@ namespace RPGBot
         }
         public void SaveSkills()
         {
-            string json = JsonConvert.SerializeObject(skills,Formatting.Indented);
-            Console.WriteLine(json);
-            using (StreamWriter sw = new StreamWriter("skills.json", false))
-            {
-                sw.Write(json);
-                sw.Flush();
-                sw.Close();
-            }
+            string json = JsonConvert.SerializeObject(skills, Formatting.Indented);
+            GameManager.Instance.DataManager.SaveDataTo("skills", json);
         }
     }
 }
